@@ -64,14 +64,49 @@ function renderForecast(data){
     forecastContainer.append(headingCol)
 
     let futureForecast = data.filter(function(forecast){
-        return forecast.dt_txt.includes('12')
+        return forecast.dt_txt.includes('5')
     })
 
-    for(let index = 0; index < futureForecast.length; index++){
-      let iconURL = `https://openweathermap.org/img/w/${futureForecast[index].weather[0].icon}.png`  
+      for(let index = 0; index < futureForecast.length; index++){
+      let iconURL = `https://openweathermap.org/img/w/${futureForecast[index].weather[0].icon}.png` 
       
-      let iconDescripton = futureForecast[index].weather[0].description;
-      
+      //let iconDescripton = futureForecast[index].weather[0].description;
+      let tempC = futureForecast[index].main.temp;
+      let humidity = futureForecast[index].main.humidity;
+      let windKPH = futureForecast[index].main.speed;
+
+      let col = $('<div>');
+      let card = $('<div>')
+      let cardBody = $('<div>');
+      let cardTitle = $('<h5>');
+      let weatherIcon = $('<img>');
+      let tempEl = $('<p>');
+      let wind = $('<p>');
+      let humidityEl = $('<p>');
+
+      col.append(card);
+      card.append(cardBody);
+      cardBody.append(cardTitle,weatherIcon,tempEl,wind,humidityEl);
+
+      col.attr('class', "col-md");      
+      card.attr('class', 'card bg-primary h-100 text-white');
+      cardTitle.attr('class', 'card-title' );
+      tempEl.attr('class', "card-text")
+      wind.attr('class', "card-text")
+      humidityEl.attr('class', "card-text")
+
+      cardTitle.text(moment(futureForecast[index].dt_text).format('D/M/YYYY'));
+      weatherIcon.attr('src', iconURL);
+      tempEl.text(`Temp: ${tempC} C`);
+      wind.text(`Wind: ${windKPH} KPH`);
+      humidityEl.text(`Humidity ${humidity} %`);
+      cardBody.append(heading, tempEl,wind,humidityEl);
+    
+      forecastContainer.append(col);
+
+
+
+
     }
 
 }
@@ -92,7 +127,7 @@ function getWeather(location){
         method: "GET"
     }).then(function(response){
         renderWeather(city, response.list[0])
-        renderForecast(response.list)
+        renderForecast(response.list);
     })
 
    
