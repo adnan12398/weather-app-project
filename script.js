@@ -5,7 +5,10 @@ const ApiKey = "d8da51c4f949bb935233bc42bd7cd4ad"
 let searchInput = $("#search-input")
 let searchForm = $("#search-form")
 let todayContainter = $('#today')
+let forecastContainer = $('#forecast')
 
+
+// get current weather of location chosen by user
 function renderWeather(city, data){
     let date = moment().format('D/M/YYYY');
     let temp = data['main']['temp'];
@@ -48,6 +51,32 @@ function renderWeather(city, data){
     todayContainter.append(card);
 }
 
+function renderForecast(data){
+
+    let headingCol = $('<div>');
+    let heading = $('<h4>');
+
+    headingCol.attr('class', 'col-12');
+    heading.text('5-day forecast');
+    headingCol.append(heading);
+
+    forecastContainer.html('')
+    forecastContainer.append(headingCol)
+
+    let futureForecast = data.filter(function(forecast){
+        return forecast.dt_txt.includes('12')
+    })
+
+    for(let index = 0; index < futureForecast.length; index++){
+      let iconURL = `https://openweathermap.org/img/w/${futureForecast[index].weather[0].icon}.png`  
+      
+      let iconDescripton = futureForecast[index].weather[0].description;
+      
+    }
+
+}
+
+
 function getWeather(location){
 
    let latitide = location.lat;
@@ -63,7 +92,7 @@ function getWeather(location){
         method: "GET"
     }).then(function(response){
         renderWeather(city, response.list[0])
-        //renderForecast(data.list)
+        renderForecast(response.list)
     })
 
    
